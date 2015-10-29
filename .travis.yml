@@ -1,0 +1,13 @@
+language: cpp
+before_install:
+  - tools/ci/travis-before-install.sh
+install: 
+  - tools/ci/travis-install.sh
+script:
+  - tools/ci/build.sh
+compiler:
+  - clang
+  - gcc
+env:
+  - OGRE_VERSION=v1-9-0
+sudo: true
