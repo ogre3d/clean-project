@@ -1,0 +1,10 @@
+before_script:
+  - tools/ci/before-install.sh
+  - tools/ci/install.sh
+
+variables:
+  OGRE_VERSION: "1.9"
+
+build:
+  script:
+    - tools/ci/build.sh

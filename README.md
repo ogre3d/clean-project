@@ -1,6 +1,12 @@
-# clean-project [![Build Status](https://travis-ci.org/ogre3d/clean-project.svg?branch=master)](https://travis-ci.org/ogre3d/clean-project)
+# clean-project
+[![Travis build status](https://travis-ci.org/ogre3d/clean-project.svg?branch=master)](https://travis-ci.org/ogre3d/clean-project)
 A clean ogre project with cmake.
 
+### Features
+- It compiles on GNU/Linux and Windows
+- It is shipped with continuous integration build script for [Gitlab CI](https://about.gitlab.com/gitlab-ci/) and [Travis](https://travis-ci.org/)
+
+### Build
 ```bash
 mkdir build
 cd build

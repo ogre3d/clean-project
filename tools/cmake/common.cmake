@@ -16,24 +16,32 @@
 #*/
 
 project(${APP})
- 
+
 if(WIN32)
 	set(CMAKE_MODULE_PATH "$ENV{OGRE_HOME}/CMake/;${CMAKE_MODULE_PATH}")
-	set(OGRE_SAMPLES_INCLUDEPATH
-		$ENV{OGRE_HOME}/Samples/include
-	)
+	set(OGRE_SAMPLES_INCLUDEPATH "$ENV{OGRE_HOME}/Samples/include")
 endif(WIN32)
  
 if(UNIX)
 	if(EXISTS "/usr/local/lib/OGRE/cmake")
 
+      # We could just *assume* that developers uses this basepath : /usr/local
 	  set(CMAKE_MODULE_PATH "/usr/local/lib/OGRE/cmake/;${CMAKE_MODULE_PATH}")
-	  set(OGRE_SAMPLES_INCLUDEPATH "/usr/local/share/OGRE/samples/Common/include/") # We could just *assume* that developers uses this basepath : /usr/local
+	  set(OGRE_SAMPLES_INCLUDEPATH "/usr/local/share/OGRE/Samples/Common/include/")
 
 	elseif(EXISTS "/usr/lib/OGRE/cmake")
 
+      # Otherwise, this one
 	  set(CMAKE_MODULE_PATH "/usr/lib/OGRE/cmake/;${CMAKE_MODULE_PATH}")
-	  set(OGRE_SAMPLES_INCLUDEPATH "/usr/share/OGRE/samples/Common/include/") # Otherwise, this one
+	  set(OGRE_SAMPLES_INCLUDEPATH "/usr/share/OGRE/Samples/Common/include/")
+
+    # apt-get installation
+    # In that case environment var OGRE_HOME should be set, because .deb ogre 
+    # packages does not carry samples
+	elseif(EXISTS "/usr/share/OGRE/cmake/modules")
+
+	  set(CMAKE_MODULE_PATH "/usr/share/OGRE/cmake/modules/;${CMAKE_MODULE_PATH}")
+	  set(OGRE_SAMPLES_INCLUDEPATH "$ENV{OGRE_HOME}/Samples/Common/include/")
 
 	else ()
 	  message(SEND_ERROR "Failed to find module path.")
