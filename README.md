@@ -1,5 +1,5 @@
 # clean-project
-[![Travis build status](https://travis-ci.org/ogre3d/clean-project.svg?branch=master)](https://travis-ci.org/ogre3d/clean-project)
+[![Travis build status](https://travis-ci.org/ogre3d/clean-project.svg?branch=master)](https://travis-ci.org/ogre3d/clean-project) [![build status](https://gitlab.com/ci/projects/17554/status.png?ref=master)](https://gitlab.com/ci/projects/17554?ref=master)
 A clean ogre project with cmake.
 
 ### Features
