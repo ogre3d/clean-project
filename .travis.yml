@@ -9,5 +9,6 @@ compiler:
   - clang
   - gcc
 env:
+  - OGRE_VERSION=1.8
   - OGRE_VERSION=1.9
 sudo: true

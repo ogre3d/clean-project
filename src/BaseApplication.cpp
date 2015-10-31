@@ -71,8 +71,10 @@ void BaseApplication::chooseSceneManager(void)
 {
     // Get the SceneManager, in this case a generic one
     mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
+#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR >= 9
 	mOverlaySystem = new Ogre::OverlaySystem();
 	mSceneMgr->addRenderQueueListener(mOverlaySystem);
+#endif
 }
 //-------------------------------------------------------------------------------------
 void BaseApplication::createCamera(void)
@@ -113,11 +115,14 @@ void BaseApplication::createFrameListener(void)
 
     //Register as a Window listener
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
-
+#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR < 9
+    mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mMouse, this);
+#else
 	OgreBites::InputContext inputContext;
 	inputContext.mMouse = mMouse; 
 	inputContext.mKeyboard = mKeyboard;
     mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, inputContext, this);
+#endif
     mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
     mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
     mTrayMgr->hideCursor();

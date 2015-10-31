@@ -60,10 +60,6 @@ set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dist")
  
 find_package(OGRE REQUIRED)
  
-#if(NOT "${OGRE_VERSION_NAME}" STREQUAL "Cthugha")
-#  message(SEND_ERROR "You need Ogre 1.7 Cthugha to build this.")
-#endif()
- 
 find_package(OIS REQUIRED)
  
 if(NOT OIS_FOUND)
@@ -97,7 +93,10 @@ if (NOT OGRE_BUILD_PLATFORM_IPHONE)
  
 	# Set up referencing of Boost
 	include_directories(${Boost_INCLUDE_DIR})
-	add_definitions(-DBOOST_ALL_NO_LIB)
+
+    # With 1-8 debian packages, there is a linker error with boost_system.
+    # The solution were to add BOOST_SYSTEM_NO_DEPRECATED at compile: http://stackoverflow.com/a/30877725/2180332
+	add_definitions(-DBOOST_ALL_NO_LIB -DBOOST_SYSTEM_NO_DEPRECATED)
 	set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_LIBRARIES})
 endif()
  

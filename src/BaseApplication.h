@@ -78,8 +78,9 @@ protected:
     Ogre::RenderWindow* mWindow;
     Ogre::String mResourcesCfg;
     Ogre::String mPluginsCfg;
+#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR >= 9
 	Ogre::OverlaySystem *mOverlaySystem;
-
+#endif
     // OgreBites
     OgreBites::SdkTrayManager* mTrayMgr;
     OgreBites::SdkCameraMan* mCameraMan;       // basic camera controller
