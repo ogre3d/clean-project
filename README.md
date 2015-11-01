@@ -6,7 +6,7 @@ A clean ogre project with cmake.
 ### Features
 - It compiles on GNU/Linux and Windows.
 - It is shipped with continuous integration build script for [Gitlab CI](https://about.gitlab.com/gitlab-ci/) and [Travis](https://travis-ci.org/).
-- It is compatible with OGRE `1.8` and `1.9`.
+- It is compatible with OGRE version: `1.7`, `1.8` and `1.9`.
 
 ### Build
 ```bash

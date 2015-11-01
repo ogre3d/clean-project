@@ -17,9 +17,9 @@ $SUDO apt-get install -y \
     mercurial \
     libois-dev
 
-if [ -n "$(apt-cache search "libogre-$OGRE_VERSION-dev")" ]; then
+if [ -n "$(apt-cache search "$OGRE_DEB_PACKAGE")" ]; then
     $SUDO apt-get install -y \
-        "libogre-$OGRE_VERSION-dev"
+        "$OGRE_DEB_PACKAGE"
 else
     $SUDO apt-get install -y \
         libcppunit-dev \
@@ -35,10 +35,10 @@ else
         libtinyxml-dev
 fi
 
-# OGRE Samples directories are not include in debian packages. As the sample
-# application use some samples includes, as SdkTray.h, it is mandatory to
-# get the sources.
-hg clone https://bitbucket.org/sinbad/ogre
-cd ogre
-hg checkout "v${OGRE_VERSION/./-}-0"
-cd ..
+# OGRE Samples directories are not include in debian packages after OGRE 1.7.4.
+# http://stackoverflow.com/a/15238730/2180332
+# As the sample application use some samples includes, as SdkTray.h, it is
+# mandatory to get the sources.
+if [[ -z "$(apt-cache search "$OGRE_DEB_PACKAGE")" || "$OGRE_VERSION" != "1.7" ]]; then
+    hg clone https://bitbucket.org/sinbad/ogre -u "$OGRE_HG_BRANCH"
+fi

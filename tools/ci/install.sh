@@ -1,7 +1,7 @@
 #!/bin/bash
 . "$( cd "$( dirname "$0" )" && pwd )/common.sh"
 
-if [ -z "$(apt-cache search "libogre-$OGRE_VERSION-dev")" ]; then
+if [ -z "$(apt-cache search "$OGRE_DEB_PACKAGE")" ]; then
     mkdir ogre/build
     cd ogre/build
 
