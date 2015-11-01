@@ -26,6 +26,48 @@ This source file is part of the
 #include <OgreRenderWindow.h>
 #include <OgreConfigFile.h>
 
+#define OGRE_1_7_AND_MORE ((OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR >= 7) || OGRE_VERSION_MAJOR > 1)
+#define OGRE_1_8_AND_MORE ((OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR >= 8) || OGRE_VERSION_MAJOR > 1)
+#define OGRE_1_9_AND_MORE ((OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR >= 9) || OGRE_VERSION_MAJOR > 1)
+#define OGRE_2_0_AND_MORE (OGRE_VERSION_MAJOR >= 2)
+
+#if OGRE_2_0_AND_MORE
+#include <OgreMaterialManager.h>
+#include <OgreTextureManager.h>
+#include <OgreWindowEventUtilities.h>
+
+#ifdef OGRE_STATIC_LIB
+#    define OGRE_STATIC_GL
+#    if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#        define OGRE_STATIC_Direct3D9
+// D3D10 will only work on vista, so be careful about statically linking
+#        if OGRE_USE_D3D10
+#            define OGRE_STATIC_Direct3D10
+#        endif
+#    endif
+#    define OGRE_STATIC_BSPSceneManager
+#    define OGRE_STATIC_ParticleFX
+#    define OGRE_STATIC_CgProgramManager
+#    ifdef OGRE_USE_PCZ
+#        define OGRE_STATIC_PCZSceneManager
+#        define OGRE_STATIC_OctreeZone
+#    else
+#        define OGRE_STATIC_OctreeSceneManager
+#    endif
+#    include "OgreStaticPluginLoader.h"
+#endif
+
+#endif
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE && OGRE_2_0_AND_MORE
+#include <OIS/OISEvents.h>
+#include <OIS/OISInputManager.h>
+#include <OIS/OISKeyboard.h>
+#include <OIS/OISMouse.h>
+
+#include <OGRE/SdkTrays.h>
+#include <OGRE/SdkCameraMan.h>
+#else
 #include <OISEvents.h>
 #include <OISInputManager.h>
 #include <OISKeyboard.h>
@@ -33,6 +75,7 @@ This source file is part of the
 
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
+#endif
 
 class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
 {
@@ -78,8 +121,9 @@ protected:
     Ogre::RenderWindow* mWindow;
     Ogre::String mResourcesCfg;
     Ogre::String mPluginsCfg;
-#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR >= 9
+#if OGRE_1_9_AND_MORE
 	Ogre::OverlaySystem *mOverlaySystem;
+    OgreBites::InputContext mInputContext;
 #endif
     // OgreBites
     OgreBites::SdkTrayManager* mTrayMgr;
@@ -92,6 +136,14 @@ protected:
     OIS::InputManager* mInputManager;
     OIS::Mouse*    mMouse;
     OIS::Keyboard* mKeyboard;
+
+#if OGRE_2_0_AND_MORE
+    // Added for Mac compatibility
+    Ogre::String                 m_ResourcePath;
+#ifdef OGRE_STATIC_LIB
+    Ogre::StaticPluginLoader m_StaticPluginLoader;
+#endif
+#endif
 };
 
 #endif // #ifndef __BaseApplication_h_

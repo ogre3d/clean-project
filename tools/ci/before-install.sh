@@ -40,5 +40,7 @@ fi
 # As the sample application use some samples includes, as SdkTray.h, it is
 # mandatory to get the sources.
 if [[ -z "$(apt-cache search "$OGRE_DEB_PACKAGE")" || "$OGRE_VERSION" != "1.7" ]]; then
-    hg clone https://bitbucket.org/sinbad/ogre -u "$OGRE_HG_BRANCH"
+    hg clone https://bitbucket.org/sinbad/ogre
+    cd ogre
+    hg checkout "$OGRE_HG_BRANCH" || hg checkout "$OGRE_HG_BRANCH_SHORT"
 fi

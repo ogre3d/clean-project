@@ -6,7 +6,15 @@ A clean ogre project with cmake.
 ### Features
 - It compiles on GNU/Linux and Windows.
 - It is shipped with continuous integration build script for [Gitlab CI](https://about.gitlab.com/gitlab-ci/) and [Travis](https://travis-ci.org/).
-- It is compatible with OGRE version: `1.7`, `1.8` and `1.9`.
+- It is compatible with OGRE version: `1.7`, `1.8`, `1.9` and `2.0`.
+
+### Roadmap
+- Travis Ubuntu 14.04 support.
+- Travis Mac support.
+- Android build.
+- Mingw cross-compilation support (build 32bits from 64bits and vice versa).
+- Mingw Windows build.
+- Maybe some unit tests?
 
 ### Build
 ```bash

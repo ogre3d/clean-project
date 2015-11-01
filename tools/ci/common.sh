@@ -15,6 +15,7 @@ if [[ "$OGRE_VERSION" == "1.7" && -n "$TRAVIS" ]]; then
 fi
 
 OGRE_HG_BRANCH="v${OGRE_VERSION/./-}-0"
+OGRE_HG_BRANCH_SHORT="v${OGRE_VERSION/./-}"
 
 # This one is used by cmake to locate the samples header dir
 export OGRE_HOME="$(pwd)/ogre"

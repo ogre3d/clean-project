@@ -16,14 +16,24 @@ This source file is part of the
 */
 #include "BaseApplication.h"
 
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+#include <macUtils.h>
+#endif
+
 //-------------------------------------------------------------------------------------
 BaseApplication::BaseApplication(void)
     : mRoot(0),
     mCamera(0),
     mSceneMgr(0),
     mWindow(0),
+#if OGRE_2_0_AND_MORE
+    mResourcesCfg(Ogre::BLANKSTRING),
+    mPluginsCfg(Ogre::BLANKSTRING),
+    mOverlaySystem(0),
+#else
     mResourcesCfg(Ogre::StringUtil::BLANK),
     mPluginsCfg(Ogre::StringUtil::BLANK),
+#endif
     mTrayMgr(0),
     mCameraMan(0),
     mDetailsPanel(0),
@@ -33,6 +43,13 @@ BaseApplication::BaseApplication(void)
     mMouse(0),
     mKeyboard(0)
 {
+#if OGRE_2_0_AND_MORE
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+    m_ResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
+#else
+    m_ResourcePath = "";
+#endif
+#endif
 }
 
 //-------------------------------------------------------------------------------------
@@ -40,6 +57,9 @@ BaseApplication::~BaseApplication(void)
 {
     if (mTrayMgr) delete mTrayMgr;
     if (mCameraMan) delete mCameraMan;
+#if OGRE_2_0_AND_MORE
+    if (mOverlaySystem) delete mOverlaySystem;
+#endif
 
     //Remove ourself as a Window listener
     Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
@@ -69,9 +89,26 @@ bool BaseApplication::configure(void)
 //-------------------------------------------------------------------------------------
 void BaseApplication::chooseSceneManager(void)
 {
-    // Get the SceneManager, in this case a generic one
+#if OGRE_2_0_AND_MORE
+    Ogre::InstancingThreadedCullingMethod threadedCullingMethod = Ogre::INSTANCING_CULLING_SINGLETHREAD;
+#if OGRE_DEBUG_MODE
+    //Debugging multithreaded code is a PITA, disable it.
+    const size_t numThreads = 1;
+#else
+    //getNumLogicalCores() may return 0 if couldn't detect
+    const size_t numThreads = std::max<size_t>( 1, Ogre::PlatformInformation::getNumLogicalCores() );
+
+    //See doxygen documentation regarding culling methods.
+    //In some cases you may still want to use single thread.
+    if( numThreads > 1 )
+        threadedCullingMethod = Ogre::INSTANCING_CULLING_THREADED;
+#endif
+    mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC, numThreads, threadedCullingMethod);
+#else
     mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
-#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR >= 9
+#endif
+
+#if OGRE_1_9_AND_MORE
 	mOverlaySystem = new Ogre::OverlaySystem();
 	mSceneMgr->addRenderQueueListener(mOverlaySystem);
 #endif
@@ -115,13 +152,12 @@ void BaseApplication::createFrameListener(void)
 
     //Register as a Window listener
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
-#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR < 9
+#if ! OGRE_1_9_AND_MORE
     mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mMouse, this);
 #else
-	OgreBites::InputContext inputContext;
-	inputContext.mMouse = mMouse; 
-	inputContext.mKeyboard = mKeyboard;
-    mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, inputContext, this);
+	mInputContext.mMouse = mMouse; 
+	mInputContext.mKeyboard = mKeyboard;
+    mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mInputContext, this);
 #endif
     mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
     mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
@@ -183,6 +219,15 @@ void BaseApplication::setupResources(void)
         {
             typeName = i->first;
             archName = i->second;
+#if OGRE_2_0_AND_MORE
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+            // OS X does not set the working directory relative to the app.
+            // In order to make things portable on OS X we need to provide
+            // the loading with it's own bundle path location.
+            if (!Ogre::StringUtil::startsWith(archName, "/", false)) // only adjust relative directories
+                archName = Ogre::String(Ogre::macBundlePath() + "/" + archName);
+#endif
+#endif
             Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
                 archName, typeName, secName);
         }
@@ -202,13 +247,22 @@ void BaseApplication::loadResources(void)
 void BaseApplication::go(void)
 {
 #ifdef _DEBUG
+#if (! defined OGRE_STATIC_LIB) && OGRE_2_0_AND_MORE
+    mResourcesCfg = m_ResourcePath + "resources_d.cfg";
+    mPluginsCfg = m_ResourcePath + "plugins_d.cfg";
+#else
     mResourcesCfg = "resources_d.cfg";
     mPluginsCfg = "plugins_d.cfg";
+#endif
+#else
+#if (! defined OGRE_STATIC_LIB) && OGRE_2_0_AND_MORE
+    mResourcesCfg = m_ResourcePath + "resources.cfg";
+    mPluginsCfg = m_ResourcePath + "plugins.cfg";
 #else
     mResourcesCfg = "resources.cfg";
     mPluginsCfg = "plugins.cfg";
 #endif
-
+#endif
     if (!setup())
         return;
 
@@ -381,22 +435,37 @@ bool BaseApplication::keyReleased( const OIS::KeyEvent &arg )
 
 bool BaseApplication::mouseMoved( const OIS::MouseEvent &arg )
 {
+#if OGRE_2_0_AND_MORE
+    if (mTrayMgr->injectPointerMove(arg)) return true;
+    mCameraMan->injectPointerMove(arg);
+#else
     if (mTrayMgr->injectMouseMove(arg)) return true;
     mCameraMan->injectMouseMove(arg);
+#endif
     return true;
 }
 
 bool BaseApplication::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
+#if OGRE_2_0_AND_MORE
+    if (mTrayMgr->injectPointerDown(arg, id)) return true;
+    mCameraMan->injectPointerDown(arg, id);
+#else
     if (mTrayMgr->injectMouseDown(arg, id)) return true;
     mCameraMan->injectMouseDown(arg, id);
+#endif
     return true;
 }
 
 bool BaseApplication::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
+#if OGRE_2_0_AND_MORE
+    if (mTrayMgr->injectPointerUp(arg, id)) return true;
+    mCameraMan->injectPointerUp(arg, id);
+#else
     if (mTrayMgr->injectMouseUp(arg, id)) return true;
     mCameraMan->injectMouseUp(arg, id);
+#endif
     return true;
 }
 

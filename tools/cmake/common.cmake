@@ -159,6 +159,13 @@ if(WIN32)
 		DESTINATION bin
 		CONFIGURATIONS Release RelWithDebInfo
 	)
+
+    if(${OGRE_VERSION_MAJOR} >= 2)
+        install(FILES ${OGRE_PLUGIN_DIR_REL}/OgreOverlay.dll
+            DESTINATION bin
+            CONFIGURATIONS Release RelWithDebInfo
+        )
+    endif(${OGRE_VERSION_MAJOR} >= 2)
  
 	install(FILES ${OGRE_PLUGIN_DIR_DBG}/OgreMain_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_Direct3D9_d.dll
@@ -166,6 +173,13 @@ if(WIN32)
 		${OGRE_PLUGIN_DIR_DBG}/libOIS_d.dll
 		DESTINATION bin
 		CONFIGURATIONS Debug
+
+    if(${OGRE_VERSION_MAJOR} >= 2)
+        install(FILES ${OGRE_PLUGIN_DIR_REL}/OgreOverlay_d.dll
+            DESTINATION bin
+            CONFIGURATIONS Release RelWithDebInfo
+        )
+    endif(${OGRE_VERSION_MAJOR} >= 2)
 	)
  
    # as of sdk 1.7.2 we need to copy the boost dll's as well

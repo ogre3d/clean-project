@@ -12,4 +12,5 @@ env:
   - OGRE_VERSION=1.7
   - OGRE_VERSION=1.8
   - OGRE_VERSION=1.9
+  - OGRE_VERSION=2.0
 sudo: true
