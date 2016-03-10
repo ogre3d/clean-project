@@ -107,7 +107,7 @@ include_directories( ${OIS_INCLUDE_DIRS}
 )
  
 if(MINGW OR UNIX)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist/bin)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 endif(MINGW OR UNIX)
 
 add_executable(${APP} WIN32 ${HDRS} ${SRCS})
