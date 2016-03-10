@@ -106,6 +106,10 @@ include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_Overlay_INCLUDE_DIRS}
 )
  
+if(MINGW OR UNIX)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist/bin)
+endif(MINGW OR UNIX)
+
 add_executable(${APP} WIN32 ${HDRS} ${SRCS})
  
 set_target_properties(${APP} PROPERTIES DEBUG_POSTFIX _d)
@@ -123,10 +127,6 @@ if(WIN32 AND NOT MINGW)
 		COMMAND copy \"$(TargetPath)\" .\\dist\\bin )
 endif(WIN32 AND NOT MINGW)
 
-if(MINGW OR UNIX)
-	set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/dist/bin)
-endif(MINGW OR UNIX)
- 
 if(WIN32)
  
 	install(TARGETS ${APP}
