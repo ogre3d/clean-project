@@ -131,7 +131,7 @@ if(WIN32)
  
 	install(TARGETS ${APP}
 		RUNTIME DESTINATION bin
-		CONFIGURATIONS All)
+	)
  
 	install(DIRECTORY ${CMAKE_SOURCE_DIR}/dist/Media
 		DESTINATION ./
@@ -187,7 +187,7 @@ if(UNIX)
  
 	install(TARGETS ${APP}
 		RUNTIME DESTINATION bin
-		CONFIGURATIONS All)
+	)
  
 	install(DIRECTORY ${CMAKE_SOURCE_DIR}/dist/media
 		DESTINATION ./
