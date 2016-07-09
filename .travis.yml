@@ -1,15 +1,65 @@
 language: cpp
+
 before_install:
   - tools/ci/before-install.sh
-install: 
+
+install:
   - tools/ci/install.sh
+
 script:
   - tools/ci/build.sh
-compiler:
-  - clang
-  - gcc
-env:
-  - OGRE_VERSION=1.7
-  - OGRE_VERSION=1.8
-  - OGRE_VERSION=1.9
-sudo: true
+
+sudo: required
+
+matrix:
+  include:
+    - os: linux
+      dist: precise
+      compiler: gcc
+      env: OGRE_VERSION=1.7
+
+    - os: linux
+      dist: precise
+      compiler: clang
+      env: OGRE_VERSION=1.7
+
+    - os: linux
+      dist: precise
+      compiler: gcc
+      env: OGRE_VERSION=1.8
+
+    - os: linux
+      dist: trusty
+      compiler: gcc
+      env: OGRE_VERSION=1.8
+
+    - os: linux
+      dist: precise
+      compiler: clang
+      env: OGRE_VERSION=1.8
+
+    - os: linux
+      dist: trusty
+      compiler: clang
+      env: OGRE_VERSION=1.8
+
+    - os: linux
+      dist: precise
+      compiler: gcc
+      env: OGRE_VERSION=1.9
+
+    - os: linux
+      dist: trusty
+      compiler: gcc
+      env: OGRE_VERSION=1.9
+
+    - os: linux
+      dist: precise
+      compiler: clang
+      env: OGRE_VERSION=1.9
+
+    - os: linux
+      dist: trusty
+      compiler: clang
+      env: OGRE_VERSION=1.9
+

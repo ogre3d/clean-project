@@ -2,8 +2,13 @@
 . "$( cd "$( dirname "$0" )" && pwd )/common.sh"
 
 # The cmake version carried by Ubuntu 12.04 is too old.
-if [ -n "$TRAVIS" ]; then
+if [[ -n "$TRAVIS" && "$_system_version" == "12.04" ]]; then
     $SUDO add-apt-repository -y ppa:kalakris/cmake
+fi
+
+# nvidia-cg-toolkit package is in the multiverse ubuntu repository.
+if [[ -n "$TRAVIS" && "$_system_version" == "14.04" ]]; then
+    $SUDO apt-add-repository -y multiverse
 fi
 
 # nvidia-cg-toolkit package is in the non-free debian repository.
@@ -21,6 +26,7 @@ if [ -n "$(apt-cache search "$OGRE_DEB_PACKAGE")" ]; then
     $SUDO apt-get install -y \
         "$OGRE_DEB_PACKAGE"
 else
+    # libxrandr-dev is needed by Ubuntu 14.04
     $SUDO apt-get install -y \
         libcppunit-dev \
         libxaw7-dev \
@@ -32,7 +38,8 @@ else
         nvidia-cg-toolkit \
         libpoco-dev \
         libtbb-dev \
-        libtinyxml-dev
+        libtinyxml-dev \
+        libxrandr-dev
 fi
 
 # OGRE Samples directories are not include in debian packages after OGRE 1.7.4.
