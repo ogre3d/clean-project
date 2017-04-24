@@ -5,11 +5,11 @@ A clean ogre project with cmake. It aims to be a start for Ogre based projects a
 
 ### Features
 
-         | Travis Ubuntu 12.04 | Travis Ubuntu 14.04 | Gitlab CI Debian Jessie
----------|---------------------|---------------------|------------------------
-Ogre 1.9 | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:
-Ogre 1.8 | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:
-Ogre 1.7 | :heavy_check_mark:  | :x:                 | :x:
+|         | Travis Ubuntu 12.04 | Travis Ubuntu 14.04 | Gitlab CI Debian Jessie|
+|:-------:|:-------------------:|:-------------------:|:----------------------:|
+|Ogre 1.9 | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:     |
+|Ogre 1.8 | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:     |
+|Ogre 1.7 | :heavy_check_mark:  | :x:                 | :x:                    |
 
 ### Roadmap
 - Ogre 2.0 and 2.1 support.
